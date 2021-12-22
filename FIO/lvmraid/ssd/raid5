@@ -1,0 +1,63 @@
+# Creating LVM RAID 0
+vgcreate lvmraid5_ssd /dev/disk/by-id/ata-Samsung_SSD_860_PRO_4TB_S5G9NC0R700213H \
+/dev/disk/by-id/ata-Samsung_SSD_860_PRO_4TB_S5G9NC0R700290W \
+/dev/disk/by-id/ata-Samsung_SSD_860_PRO_4TB_S5G9NC0R700292B
+
+lvcreate --type raid5 -l 100%FREE --nosync -n lv_lvmraid5_ssd lvmraid5_ssd
+
+mkfs.ext4 /dev/lvmraid5_ssd/lv_lvmraid5_ssd 
+  
+mkdir -p /lv_lvmraid5_ssd
+mount /dev/lvmraid5_ssd/lv_lvmraid5_ssd /lv_lvmraid5_ssd
+
+# FIO Tests Results
+fio-3.16
+Starting 4 processes
+Jobs: 1 (f=1): [_(3),m(1)][100.0%][r=12.9MiB/s,w=12.8MiB/s][r=3310,w=3266 IOPS][eta 00m:02s]
+random_rw: (groupid=0, jobs=4): err= 0: pid=3228847: Wed Dec 22 00:38:05 2021
+  read: IOPS=1135, BW=4543KiB/s (4652kB/s)(100GiB/23081221msec)
+    clat (usec): min=84, max=14295, avg=416.82, stdev=422.52
+     lat (usec): min=84, max=14296, avg=417.25, stdev=422.51
+    clat percentiles (usec):
+     |  1.00th=[  103],  5.00th=[  118], 10.00th=[  125], 20.00th=[  137],
+     | 30.00th=[  149], 40.00th=[  167], 50.00th=[  184], 60.00th=[  200],
+     | 70.00th=[  562], 80.00th=[  955], 90.00th=[ 1037], 95.00th=[ 1090],
+     | 99.00th=[ 1188], 99.50th=[ 1303], 99.90th=[ 4424], 99.95th=[ 4948],
+     | 99.99th=[ 5014]
+   bw (  KiB/s): min= 2055, max=42440, per=100.00%, avg=4552.29, stdev=423.48, samples=184209
+   iops        : min=  513, max=10610, avg=1137.96, stdev=105.87, samples=184209
+  write: IOPS=1135, BW=4543KiB/s (4652kB/s)(99.0GiB/23081221msec); 0 zone resets
+    clat (usec): min=62, max=41095, avg=3087.00, stdev=1952.59
+     lat (usec): min=62, max=41096, avg=3087.70, stdev=1952.61
+    clat percentiles (usec):
+     |  1.00th=[  196],  5.00th=[  253], 10.00th=[  297], 20.00th=[ 2212],
+     | 30.00th=[ 2376], 40.00th=[ 2507], 50.00th=[ 3294], 60.00th=[ 3425],
+     | 70.00th=[ 3556], 80.00th=[ 4047], 90.00th=[ 4883], 95.00th=[ 5669],
+     | 99.00th=[ 9372], 99.50th=[15270], 99.90th=[20579], 99.95th=[24773],
+     | 99.99th=[25822]
+   bw (  KiB/s): min= 2690, max=43144, per=100.00%, avg=4552.21, stdev=408.02, samples=184209
+   iops        : min=  671, max=10786, avg=1137.94, stdev=102.00, samples=184209
+  lat (usec)   : 100=0.32%, 250=36.59%, 500=4.37%, 750=0.48%, 1000=7.37%
+  lat (msec)   : 2=9.93%, 4=30.82%, 10=9.63%, 20=0.41%, 50=0.07%
+  cpu          : usr=0.58%, sys=3.57%, ctx=52448858, majf=0, minf=429859
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued rwts: total=26214486,26214314,0,0 short=0,0,0,0 dropped=0,0,0,0
+     latency   : target=0, window=0, percentile=100.00%, depth=16
+
+Run status group 0 (all jobs):
+   READ: bw=4543KiB/s (4652kB/s), 4543KiB/s-4543KiB/s (4652kB/s-4652kB/s), io=100GiB (107GB), run=23081221-23081221msec
+  WRITE: bw=4543KiB/s (4652kB/s), 4543KiB/s-4543KiB/s (4652kB/s-4652kB/s), io=99.0GiB (107GB), run=23081221-23081221msec
+
+Disk stats (read/write):
+    dm-13: ios=26214264/26232539, merge=0/0, ticks=10033896/78883168, in_queue=88917064, util=100.00%, aggrios=8739068/20408300, aggrmerge=0/0, aggrticks=2243170/9871724, aggrin_queue=12114894, aggrutil=98.98%
+    dm-1: ios=0/23326546, merge=0/0, ticks=0/18091064, in_queue=18091064, util=98.96%, aggrios=17477789/40810772, aggrmerge=1435/3014, aggrticks=4619525/19545891, aggrin_queue=402564, aggrutil=99.33%
+  sdt: ios=17477789/40810772, merge=1435/3014, ticks=4619525/19545891, in_queue=402564, util=99.33%
+    dm-10: ios=17475308/17492155, merge=0/0, ticks=4508580/1596316, in_queue=6104896, util=97.27%, aggrios=17473725/40815838, aggrmerge=1583/2863, aggrticks=4492792/19921754, aggrin_queue=398576, aggrutil=99.35%
+  sdv: ios=17473725/40815838, merge=1583/2863, ticks=4492792/19921754, in_queue=398576, util=99.35%
+  dm-8: ios=17479224/17487240, merge=0/0, ticks=4635288/1499248, in_queue=6134536, util=97.28%
+    dm-11: ios=0/23326546, merge=0/0, ticks=0/18177976, in_queue=18177976, util=98.97%, aggrios=17478453/40814291, aggrmerge=1427/3023, aggrticks=4298401/19611986, aggrin_queue=395212, aggrutil=99.35%
+  sds: ios=17478453/40814291, merge=1427/3023, ticks=4298401/19611986, in_queue=395212, util=99.35%
+  dm-9: ios=0/23326546, merge=0/0, ticks=0/18368748, in_queue=18368748, util=98.98%
+  dm-12: ios=17479880/17490768, merge=0/0, ticks=4315156/1496992, in_queue=5812148, util=97.25%
