@@ -1,0 +1,60 @@
+/dev/disk/by-id/nvme-SAMSUNG_MZQLB3T8HALS-00007_S438NC0R504906
+/dev/disk/by-id/nvme-SAMSUNG_MZQLB3T8HALS-00007_S438NC0R504914
+/dev/disk/by-id/nvme-SAMSUNG_MZQLB3T8HALS-00007_S438NC0R504919
+
+# pgbench Tests Results
+
+postgres@u18-pgbenchv5:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 150 benchmark
+Password:
+dropping old tables...
+creating tables...
+generating data (client-side)...
+15000000 of 15000000 tuples (100%) done (elapsed 19.21 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done in 32.87 s (drop tables 0.34 s, create tables 0.01 s, client-side generate 20.00 s, vacuum 2.87 s, primary keys 9.66 s).
+postgres@u18-pgbenchv5:~$
+
+
+postgres@u18-pgbenchv5:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark
+Password:
+dropping old tables...
+creating tables...
+generating data (client-side)...
+1500000000 of 1500000000 tuples (100%) done (elapsed 2200.87 s, remaining 0.00 s))
+vacuuming...
+creating primary keys...
+done in 3258.05 s (drop tables 0.31 s, create tables 0.03 s, client-side generate 2215.83 s, vacuum 282.15 s, primary keys 759.73 s).
+postgres@u18-pgbenchv5:~$
+
+
+postgres@u18-pgbenchv5:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 2 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 15000
+query mode: simple
+number of clients: 1
+number of threads: 1
+duration: 90 s
+number of transactions actually processed: 67668
+latency average = 1.330 ms
+tps = 751.851276 (including connections establishing)
+tps = 751.968665 (excluding connections establishing)
+postgres@u18-pgbenchv5:~$
+
+
+postgres@u18-pgbenchv5:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres -T 30 -j 2 -S -c 4 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: select only>
+scaling factor: 15000
+query mode: simple
+number of clients: 4
+number of threads: 2
+duration: 30 s
+number of transactions actually processed: 713059
+latency average = 0.168 ms
+tps = 23768.289524 (including connections establishing)
+tps = 23779.627611 (excluding connections establishing)
+postgres@u18-pgbenchv5:~$
