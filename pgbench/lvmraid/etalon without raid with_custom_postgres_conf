@@ -1,0 +1,72 @@
+root@lxc-super02 /dev # rm -rf /dev/nvme5n1/*
+root@lxc-super02 /dev # mkfs.ext4 /dev/nvme5n1
+mke2fs 1.45.5 (07-Jan-2020)
+/dev/nvme5n1 contains a ext4 file system
+        last mounted on /var/snap/lxd/common/lxd/storage-pools/etalon on Thu Dec 23 15:12:28 2021
+Proceed anyway? (y,N) n
+
+root@lxc-super02 /dev # mkdir -p /nvme5n1
+root@lxc-super02 /dev # lxc storage create lv_lvmraid_etalon_nvme dir source=/nvme5n1
+Storage pool lv_lvmraid_etalon_nvme created
+root@lxc-super02 /dev # lxc init 23b29233ca2c u18-pgbench-lvmraid-etalon -s lv_lvmraid_etalon_nvme
+Creating u18-pgbench-lvmraid-etalon
+
+# pgbench Tests Results
+
+root@u18-pgbench-lvmraid-etalon-settings:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 150 benchmark
+Password:
+dropping old tables...
+NOTICE:  table "pgbench_accounts" does not exist, skipping
+NOTICE:  table "pgbench_branches" does not exist, skipping
+NOTICE:  table "pgbench_history" does not exist, skipping
+NOTICE:  table "pgbench_tellers" does not exist, skipping
+creating tables...
+generating data (client-side)...
+15000000 of 15000000 tuples (100%) done (elapsed 16.00 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done in 37.98 s (drop tables 0.00 s, create tables 0.01 s, client-side generate 16.74 s, vacuum 5.30 s, primary keys 15.93 s).
+
+
+root@u18-pgbench-lvmraid-etalon-settings:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark
+Password:
+dropping old tables...
+creating tables...
+generating data (client-side)...
+1500000000 of 1500000000 tuples (100%) done (elapsed 1611.28 s, remaining 0.00 s))
+vacuuming...
+creating primary keys...
+done in 3506.52 s (drop tables 0.19 s, create tables 0.01 s, client-side generate 1627.39 s, vacuum 435.38 s, primary keys 1443.56 s).
+root@u18-pgbench-lvmraid-etalon-settings:~#
+
+
+root@u18-pgbench-lvmraid-etalon-settings:~# pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 2 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 15000
+query mode: simple
+number of clients: 1
+number of threads: 1
+duration: 90 s
+number of transactions actually processed: 42783
+latency average = 2.104 ms
+tps = 475.363821 (including connections establishing)
+tps = 475.439105 (excluding connections establishing)
+root@u18-pgbench-lvmraid-etalon-settings:~#
+
+
+root@u18-pgbench-lvmraid-etalon-settings:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -T 30 -j 2 -S -c 4 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: select only>
+scaling factor: 15000
+query mode: simple
+number of clients: 4
+number of threads: 2
+duration: 30 s
+number of transactions actually processed: 382540
+latency average = 0.314 ms
+tps = 12751.097647 (including connections establishing)
+tps = 12756.520309 (excluding connections establishing)
+root@u18-pgbench-lvmraid-etalon-settings:~#
