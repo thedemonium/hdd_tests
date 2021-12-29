@@ -3,18 +3,18 @@ root@lxc-super02:~# vgcreate lvmraid0_nvme /dev/nvme0n1 /dev/nvme1n1
   Physical volume "/dev/nvme1n1" successfully created.
   Volume group "lvmraid0_nvme" successfully created
 
-root@lxc-super02:~# lvcreate -i 2 -I 4 -l100%FREE -n lv_lvmraid0_nvme lvmrai                                                                                                             d0_nvme
+root@lxc-super02:~# lvcreate -i 2 -I 4 -l100%FREE -n lv_lvmraid0_nvme lvmraid0_nvme                                                                                                             
   Logical volume "lv_lvmraid0_nvme" created.
 
 root@lxc-super02:~# mkfs.ext4 /dev/lvmraid0_nvme/lv_lvmraid0_nvme
 root@lxc-super02:~# mkdir -p /lv_lvmraid0_nvme
-root@lxc-super02:~# mount /dev/lvmraid0_nvme/lv_lvmraid0_nvme /lv_lvmraid0_n                                                                                                             vme
+root@lxc-super02:~# mount /dev/lvmraid0_nvme/lv_lvmraid0_nvme /lv_lvmraid0_nvme                                                                                                             
 root@lxc-super02:~# rm -rf /lv_lvmraid0_nvme/*
-root@lxc-super02:~# lxc storage create lv_lvmraid0_nvme dir source=/lv_lvmra                                                                                                             id0_nvme
+root@lxc-super02:~# lxc storage create lv_lvmraid0_nvme dir source=/lvmraid0_nvme                                                                                                             
 Storage pool lv_lvmraid0_nvme created
 
-root@lxc-super02:~# lxc image list                                                                                                           acters
-root@lxc-super02:~# lxc init 23b29233ca2c u18-pgbench-lvmraid0 -s lv_lvmraid                                                                                                             0_nvme
+root@lxc-super02:~# lxc image list                                                                                                         
+root@lxc-super02:~# lxc init 23b29233ca2c u18-pgbench-lvmraid0 -s lv_lvmraid0_nvme                                                                                                            
 Creating u18-pgbench-lvmraid0
 
 # pgbench Tests Results
