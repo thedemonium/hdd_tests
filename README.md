@@ -43,7 +43,7 @@ size=50G
 | pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 2 benchmark        | number of transactions actually processed: 99878   | number of transactions actually processed: 96676  | number of transactions actually processed: 67668  | number of transactions actually processed: 70750  |
 | pgbench -h 127.0.0.1 -p 5432 -U postgres -T 30 -j 2 -S -c 4 benchmark | number of transactions actually processed: 1596150 | number of transactions actually processed: 849168 | number of transactions actually processed: 713059 | number of transactions actually processed: 783608 |
 
-<h2>#Table of results with mdraid with custom limits</h2>
+<h2>#Table of results with lvmraid (custom limits)</h2>
 
 | Command (custom settings)                                             | etalon without raid | raid0                                             | raid5                                             |
 |-----------------------------------------------------------------------|---------------------|---------------------------------------------------|---------------------------------------------------|

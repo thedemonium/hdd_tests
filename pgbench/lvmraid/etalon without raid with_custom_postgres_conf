@@ -1,0 +1,14 @@
+root@lxc-super02 /dev # rm -rf /dev/nvme5n1/*
+root@lxc-super02 /dev # mkfs.ext4 /dev/nvme5n1
+mke2fs 1.45.5 (07-Jan-2020)
+/dev/nvme5n1 contains a ext4 file system
+        last mounted on /var/snap/lxd/common/lxd/storage-pools/etalon on Thu Dec 23 15:12:28 2021
+Proceed anyway? (y,N) n
+
+root@lxc-super02 /dev # mkdir -p /nvme5n1
+root@lxc-super02 /dev # lxc storage create lv_lvmraid_etalon_nvme dir source=/nvme5n1
+Storage pool lv_lvmraid_etalon_nvme created
+root@lxc-super02 /dev # lxc init 23b29233ca2c u18-pgbench-lvmraid-etalon -s lv_lvmraid_etalon_nvme
+Creating u18-pgbench-lvmraid-etalon
+
+# pgbench Tests Results
