@@ -47,7 +47,7 @@ size=50G
 
 | Command (custom settings)                                             | etalon without raid | raid0                                             | raid5                                             |
 |-----------------------------------------------------------------------|---------------------|---------------------------------------------------|---------------------------------------------------|
-| pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 150 benchmark          |                     | done in 55.01 s                                   | done in 57.30 s                                   |
+| pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 150 benchmark          | done in 37.98 s     | done in 55.01 s                                   | done in 57.30 s                                   |
 | pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark        |                     | done in 3741.85 s                                 | done in 4394.09 s                                 |
 | pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 2 benchmark        |                     | number of transactions actually processed: 64999  | number of transactions actually processed: 31419  |
 | pgbench -h 127.0.0.1 -p 5432 -U postgres -T 30 -j 2 -S -c 4 benchmark |                     | number of transactions actually processed: 291017 | number of transactions actually processed: 195523 |

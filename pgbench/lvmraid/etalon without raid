@@ -25,7 +25,7 @@ done in 37.53 s (drop tables 0.13 s, create tables 0.01 s, client-side generate 
 postgres@u18-pgbench-lvmraid-etalon:~$
 
 
-postgres@u18-pgbench-lvmraid-etalon:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres
+postgres@u18-pgbench-lvmraid-etalon:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark
 Password:
 dropping old tables...
 creating tables...
