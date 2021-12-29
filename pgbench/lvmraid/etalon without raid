@@ -1,0 +1,71 @@
+root@lxc-super02 /dev # rm -rf /dev/nvme5n1/*
+root@lxc-super02 /dev # mkfs.ext4 /dev/nvme5n1
+mke2fs 1.45.5 (07-Jan-2020)
+/dev/nvme5n1 contains a ext4 file system
+        last mounted on /var/snap/lxd/common/lxd/storage-pools/etalon on Thu Dec 23 15:12:28 2021
+Proceed anyway? (y,N) n
+
+root@lxc-super02 /dev # mkdir -p /nvme5n1
+root@lxc-super02 /dev # lxc storage create lv_lvmraid_etalon_nvme dir source=/nvme5n1
+Storage pool lv_lvmraid_etalon_nvme created
+root@lxc-super02 /dev # lxc init 23b29233ca2c u18-pgbench-lvmraid-etalon -s lv_lvmraid_etalon_nvme
+Creating u18-pgbench-lvmraid-etalon
+
+# pgbench Tests Results
+
+postgres@u18-pgbench-lvmraid-etalon:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 150 benchmark
+Password:
+dropping old tables...
+creating tables...
+generating data (client-side)...
+15000000 of 15000000 tuples (100%) done (elapsed 23.79 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done in 37.53 s (drop tables 0.13 s, create tables 0.01 s, client-side generate 24.51 s, vacuum 4.65 s, primary keys 8.23 s).
+postgres@u18-pgbench-lvmraid-etalon:~$
+
+
+postgres@u18-pgbench-lvmraid-etalon:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres
+Password:
+dropping old tables...
+creating tables...
+generating data (client-side)...
+1500000000 of 1500000000 tuples (100%) done (elapsed 2732.49 s, remaining 0.00 s
+vacuuming...
+creating primary keys...
+done in 4122.66 s (drop tables 0.12 s, create tables 0.01 s, client-side generate 2748.56 s, vacuum 443.13 s, primary keys 930.84 s).
+postgres@u18-pgbench-lvmraid-etalon:~$
+
+
+
+postgres@u18-pgbench-lvmraid-etalon:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 2 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 15000
+query mode: simple
+number of clients: 1
+number of threads: 1
+duration: 90 s
+number of transactions actually processed: 39174
+latency average = 2.297 ms
+tps = 435.263857 (including connections establishing)
+tps = 435.331161 (excluding connections establishing)
+postgres@u18-pgbench-lvmraid-etalon:~$
+
+
+
+postgres@u18-pgbench-lvmraid-etalon:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres -T 30 -j 2 -S -c 4 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: select only>
+scaling factor: 15000
+query mode: simple
+number of clients: 4
+number of threads: 2
+duration: 30 s
+number of transactions actually processed: 310658
+latency average = 0.386 ms
+tps = 10355.027427 (including connections establishing)
+tps = 10359.712400 (excluding connections establishing)
+postgres@u18-pgbench-lvmraid-etalon:~$

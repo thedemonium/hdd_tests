@@ -32,3 +32,22 @@ time_based
 rw=randrw
 size=50G
 </code>
+
+
+<h2>#Table of results with mdraid without limits</h2>
+
+| Command                                                               | etalon without raid                                | raid0                                             | raid5                                             | raid5-status-failed                               |
+|-----------------------------------------------------------------------|----------------------------------------------------|---------------------------------------------------|---------------------------------------------------|---------------------------------------------------|
+| pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 150 benchmark          | done in 24.46 s                                    | done in 23.62 s                                   | done in 32.87 s                                   | done in 56.83 s                                   |
+| pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark        | done in 2374.99 s                                  | done in 2386.01 s                                 | done in 3258.05 s                                 | done in 3252.54 s                                 |
+| pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 2 benchmark        | number of transactions actually processed: 99878   | number of transactions actually processed: 96676  | number of transactions actually processed: 67668  | number of transactions actually processed: 70750  |
+| pgbench -h 127.0.0.1 -p 5432 -U postgres -T 30 -j 2 -S -c 4 benchmark | number of transactions actually processed: 1596150 | number of transactions actually processed: 849168 | number of transactions actually processed: 713059 | number of transactions actually processed: 783608 |
+
+<h2>#Table of results with mdraid with custom limits</h2>
+
+| Command (custom settings)                                             | etalon without raid | raid0                                             | raid5                                             |
+|-----------------------------------------------------------------------|---------------------|---------------------------------------------------|---------------------------------------------------|
+| pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 150 benchmark          |                     | done in 55.01 s                                   | done in 57.30 s                                   |
+| pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark        |                     | done in 3741.85 s                                 | done in 4394.09 s                                 |
+| pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 2 benchmark        |                     | number of transactions actually processed: 64999  | number of transactions actually processed: 31419  |
+| pgbench -h 127.0.0.1 -p 5432 -U postgres -T 30 -j 2 -S -c 4 benchmark |                     | number of transactions actually processed: 291017 | number of transactions actually processed: 195523 |
