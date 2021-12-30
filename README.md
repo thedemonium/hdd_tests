@@ -84,9 +84,9 @@ Container:
 <br>  work_mem = 32MB
 <br>  maintenance_work_mem = 1GB
 <br>  dynamic_shared_memory_type = posix
-<br>  wal_level = replica      
+<br>  wal_level = replica
 <br>  max_wal_senders = 3
-<br>  checkpoint_timeout = 1200      
+<br>  checkpoint_timeout = 1200
 <br>  wal_compression = on
 <br>  max_wal_size = 8GB
 <br>  min_wal_size = 80MB
