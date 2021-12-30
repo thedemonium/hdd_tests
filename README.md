@@ -73,12 +73,12 @@ size=50G
 
 <h2>#Сustom limits</h2>
 Container:
-<code>
+
 <br>  limits.cpu: "4"
 <br>  limits.memory: 16GB
-</code>
+
 <br><br>Postgres:
-<code>
+
 <br>  shared_buffers = 8GB
 <br>  #huge_pages = try
 <br>  work_mem = 32MB
@@ -90,4 +90,3 @@ Container:
 <br>  wal_compression = on
 <br>  max_wal_size = 8GB
 <br>  min_wal_size = 80MB
-</code>
