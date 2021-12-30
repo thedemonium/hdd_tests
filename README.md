@@ -44,7 +44,7 @@ size=50G
 | pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 2 benchmark        | number of transactions actually processed: 42564  | number of transactions actually processed: 71177  |       |
 | pgbench -h 127.0.0.1 -p 5432 -U postgres -T 30 -j 2 -S -c 4 benchmark | number of transactions actually processed: 205240 | number of transactions actually processed: 556360 |       |
 
-<h2>#Table of results with mdraid without limits</h2>
+<h2>#Table of results with mdraid (default settings)</h2>
 
 | Command (default settings)                                                                | etalon without raid                                | raid1                                             | raid5                                             | raid5-status-failed                               |
 |-----------------------------------------------------------------------|----------------------------------------------------|---------------------------------------------------|---------------------------------------------------|---------------------------------------------------|
