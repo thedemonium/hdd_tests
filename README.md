@@ -77,7 +77,7 @@ Container:
 <br>  limits.cpu: "4"
 <br>  limits.memory: 16GB
 
-<br><br>Postgres:
+Postgres:
 
 <br>  shared_buffers = 8GB
 <br>  #huge_pages = try
