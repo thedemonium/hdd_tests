@@ -1,0 +1,72 @@
+
+sgdisk -Z /dev/disk/by-id/nvme-SAMSUNG_MZQLB3T8HALS-00007_S438NC0R504922
+
+mkfs.ext4 /dev/disk/by-id/nvme-SAMSUNG_MZQLB3T8HALS-00007_S438NC0R504922mke2fs 1.45.5 (07-Jan-2020)
+
+mkdir -p /etalon
+
+mount /dev/disk/by-id/nvme-SAMSUNG_MZQLB3T8HALS-00007_S438NC0R504922 /etalon
+
+lxc storage create etalon dir source=/etalon
+
+# pgbench Tests Results
+
+
+root@u18-pgbench-etalon-settings:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 150 benchmark
+Password:
+dropping old tables...
+NOTICE:  table "pgbench_accounts" does not exist, skipping
+NOTICE:  table "pgbench_branches" does not exist, skipping
+NOTICE:  table "pgbench_history" does not exist, skipping
+NOTICE:  table "pgbench_tellers" does not exist, skipping
+creating tables...
+generating data (client-side)...
+15000000 of 15000000 tuples (100%) done (elapsed 12.42 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done in 30.33 s (drop tables 0.00 s, create tables 0.01 s, client-side generate 13.03 s, vacuum 2.86 s, primary keys 14.44 s).
+root@u18-pgbench-etalon-settings:~#
+
+
+root@u18-pgbench-etalon-settings:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark
+Password:
+dropping old tables...
+creating tables...
+generating data (client-side)...
+1500000000 of 1500000000 tuples (100%) done (elapsed 1590.14 s, remaining 0.00 s))
+vacuuming...
+creating primary keys...
+done in 3825.46 s (drop tables 0.33 s, create tables 0.00 s, client-side generate 1605.37 s, vacuum 623.13 s, primary keys 1596.62 s).
+root@u18-pgbench-etalon-settings:~#
+
+
+root@u18-pgbench-etalon-settings:~# pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 2 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 15000
+query mode: simple
+number of clients: 1
+number of threads: 1
+duration: 90 s
+number of transactions actually processed: 42564
+latency average = 2.115 ms
+tps = 472.917882 (including connections establishing)
+tps = 472.987633 (excluding connections establishing)
+root@u18-pgbench-etalon-settings:~#
+
+
+root@u18-pgbench-etalon-settings:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -T 30 -j 2 -S -c 4 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: select only>
+scaling factor: 15000
+query mode: simple
+number of clients: 4
+number of threads: 2
+duration: 30 s
+number of transactions actually processed: 205240
+latency average = 0.585 ms
+tps = 6841.122223 (including connections establishing)
+tps = 6844.160055 (excluding connections establishing)
+root@u18-pgbench-etalon-settings:~#
