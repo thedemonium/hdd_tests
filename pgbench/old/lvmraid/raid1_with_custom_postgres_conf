@@ -1,0 +1,94 @@
+root@lxc-super02:~# vgcreate lvmraid0_nvme /dev/nvme0n1 /dev/nvme1n1
+  Physical volume "/dev/nvme0n1" successfully created.
+  Physical volume "/dev/nvme1n1" successfully created.
+  Volume group "lvmraid0_nvme" successfully created
+
+root@lxc-super02:~# lvcreate -i 2 -I 4 -l100%FREE -n lv_lvmraid0_nvme lvmraid0_nvme                                                                                                             
+  Logical volume "lv_lvmraid0_nvme" created.
+
+root@lxc-super02:~# mkfs.ext4 /dev/lvmraid0_nvme/lv_lvmraid0_nvme
+root@lxc-super02:~# mkdir -p /lv_lvmraid0_nvme
+root@lxc-super02:~# mount /dev/lvmraid0_nvme/lv_lvmraid0_nvme /lv_lvmraid0_nvme                                                                                                             
+root@lxc-super02:~# rm -rf /lv_lvmraid0_nvme/*
+root@lxc-super02:~# lxc storage create lv_lvmraid0_nvme dir source=/lv_lvmraid0_nvme                                                                                                             
+Storage pool lv_lvmraid0_nvme created
+
+root@lxc-super02:~# lxc image list  
+root@lxc-super02:~# lxc init 23b29233ca2c u18-pgbench-lvmraid0 -s lv_lvmraid                                                                                                             
+Creating u18-pgbench-lvmraid0
+
+
+lxc config edit u18-pgbench-lvmraid0
+
+  limits.cpu: "4"
+  limits.memory: 16GB
+
+
+/etc/postgresql/13/main/postgresql.conf
+
+shared_buffers = 8GB
+#huge_pages = try
+work_mem = 32MB
+maintenance_work_mem = 1GB
+dynamic_shared_memory_type = posix
+
+wal_level = replica      # minimal, replica, or logical
+max_wal_senders = 3
+checkpoint_timeout = 1200        #default = 300 (5 min)
+wal_compression = on
+max_wal_size = 8GB
+min_wal_size = 80MB
+
+postgres@u18-pgbench-lvmraid0:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 150 benchmark
+Password:
+dropping old tables...
+creating tables...
+generating data (client-side)...
+15000000 of 15000000 tuples (100%) done (elapsed 14.00 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done in 55.01 s (drop tables 22.43 s, create tables 0.01 s, client-side generate 14.37 s, vacuum 2.93 s, primary keys 15.27 s).
+postgres@u18-pgbench-lvmraid0:~$
+
+
+postgres@u18-pgbench-lvmraid0:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark
+Password:
+dropping old tables...
+creating tables...
+generating data (client-side)...
+1500000000 of 1500000000 tuples (100%) done (elapsed 1598.59 s, remaining 0.00 s))
+vacuuming...
+creating primary keys...
+done in 3741.85 s (drop tables 0.38 s, create tables 0.00 s, client-side generate 1613.01 s, vacuum 592.33 s, primary keys 1536.14 s).
+postgres@u18-pgbench-lvmraid0:~$
+
+
+postgres@u18-pgbench-lvmraid0:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 2 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 15000
+query mode: simple
+number of clients: 1
+number of threads: 1
+duration: 90 s
+number of transactions actually processed: 64999
+latency average = 1.385 ms
+tps = 722.200624 (including connections establishing)
+tps = 722.293140 (excluding connections establishing)
+postgres@u18-pgbench-lvmraid0:~$
+
+
+postgres@u18-pgbench-lvmraid0:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres -T 30 -j 2 -S -c 4 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: select only>
+scaling factor: 15000
+query mode: simple
+number of clients: 4
+number of threads: 2
+duration: 30 s
+number of transactions actually processed: 291017
+latency average = 0.413 ms
+tps = 9695.104643 (including connections establishing)
+tps = 9699.185397 (excluding connections establishing)

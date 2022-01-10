@@ -1,4 +1,4 @@
-#Old tests with incorrect commands
+#Old tests with incorrect commands (for limits)
 
 <h2>#Table of results with mdraid (custom limits)</h2>
 

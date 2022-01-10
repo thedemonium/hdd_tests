@@ -1,0 +1,62 @@
+/dev/disk/by-id/nvme-SAMSUNG_MZQLB3T8HALS-00007_S438NC0R504920
+/dev/disk/by-id/nvme-SAMSUNG_MZQLB3T8HALS-00007_S438NC0R504923
+
+
+# pgbench Tests Results
+
+root@u18-pgbench:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 150 benchmark
+Password:
+dropping old tables...
+creating tables...
+generating data (client-side)...
+15000000 of 15000000 tuples (100%) done (elapsed 13.25 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done in 23.62 s (drop tables 0.28 s, create tables 0.00 s, client-side generate 13.77 s, vacuum 2.81 s, primary keys 6.76 s).
+root@u18-pgbench:~#
+
+
+
+root@u18-pgbench:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark
+Password:
+dropping old tables...
+creating tables...
+generating data (client-side)...
+1500000000 of 1500000000 tuples (100%) done (elapsed 1451.26 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done in 2386.01 s (drop tables 0.27 s, create tables 0.00 s, client-side generate 1464.57 s, vacuum 280.82 s, primary keys 640.35 s).
+
+
+
+
+root@u18-pgbench:~# pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 2 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 150
+query mode: simple
+number of clients: 1
+number of threads: 1
+duration: 90 s
+number of transactions actually processed: 96676
+latency average = 0.931 ms
+tps = 1074.169290 (including connections establishing)
+tps = 1074.336472 (excluding connections establishing)
+
+
+root@u18-pgbench:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -T 30 -j 2 -S -c 4 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: select only>
+scaling factor: 150
+query mode: simple
+number of clients: 4
+number of threads: 2
+duration: 30 s
+number of transactions actually processed: 849168
+latency average = 0.141 ms
+tps = 28305.164382 (including connections establishing)
+tps = 28317.542869 (excluding connections establishing)
+root@u18-pgbench:~#
+

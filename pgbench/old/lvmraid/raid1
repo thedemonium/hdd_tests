@@ -1,0 +1,76 @@
+root@lxc-super02:~# vgcreate lvmraid0_nvme /dev/nvme0n1 /dev/nvme1n1
+  Physical volume "/dev/nvme0n1" successfully created.
+  Physical volume "/dev/nvme1n1" successfully created.
+  Volume group "lvmraid0_nvme" successfully created
+
+root@lxc-super02:~# lvcreate -i 2 -I 4 -l100%FREE -n lv_lvmraid0_nvme lvmraid0_nvme                                                                                                             
+  Logical volume "lv_lvmraid0_nvme" created.
+
+root@lxc-super02:~# mkfs.ext4 /dev/lvmraid0_nvme/lv_lvmraid0_nvme
+root@lxc-super02:~# mkdir -p /lv_lvmraid0_nvme
+root@lxc-super02:~# mount /dev/lvmraid0_nvme/lv_lvmraid0_nvme /lv_lvmraid0_nvme                                                                                                             
+root@lxc-super02:~# rm -rf /lv_lvmraid0_nvme/*
+root@lxc-super02:~# lxc storage create lv_lvmraid0_nvme dir source=/lvmraid0_nvme                                                                                                             
+Storage pool lv_lvmraid0_nvme created
+
+root@lxc-super02:~# lxc image list                                                                                                         
+root@lxc-super02:~# lxc init 23b29233ca2c u18-pgbench-lvmraid0 -s lv_lvmraid0_nvme                                                                                                            
+Creating u18-pgbench-lvmraid0
+
+# pgbench Tests Results
+
+root@u18-pgbench-lvmraid0:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 150 benchmark
+Password:
+dropping old tables...
+creating tables...
+generating data (client-side)...
+15000000 of 15000000 tuples (100%) done (elapsed 12.79 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done in 46.31 s (drop tables 24.66 s, create tables 0.00 s, client-side generate 13.30 s, vacuum 2.78 s, primary keys 5.56 s).
+root@u18-pgbench-lvmraid0:~#
+
+
+root@u18-pgbench-lvmraid0:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark
+Password:
+dropping old tables...
+creating tables...
+generating data (client-side)...
+1500000000 of 1500000000 tuples (100%) done (elapsed 1358.46 s, remaining 0.00 s))
+vacuuming...
+creating primary keys...
+done in 2262.67 s (drop tables 0.26 s, create tables 0.00 s, client-side generate 1371.53 s, vacuum 265.29 s, primary keys 625.59 s).
+root@u18-pgbench-lvmraid0:~#
+
+
+root@u18-pgbench-lvmraid0:~# pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 2 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 15000
+query mode: simple
+number of clients: 1
+number of threads: 1
+duration: 90 s
+number of transactions actually processed: 104473
+latency average = 0.861 ms
+tps = 1160.806296 (including connections establishing)
+tps = 1160.983606 (excluding connections establishing)
+root@u18-pgbench-lvmraid0:~#
+
+
+root@u18-pgbench-lvmraid0:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -T 30 -j 2 -S -c 4 benchmark
+Password:
+starting vacuum...end.
+transaction type: <builtin: select only>
+scaling factor: 15000
+query mode: simple
+number of clients: 4
+number of threads: 2
+duration: 30 s
+number of transactions actually processed: 709422
+latency average = 0.169 ms
+tps = 23647.014370 (including connections establishing)
+tps = 23657.866676 (excluding connections establishing)
+root@u18-pgbench-lvmraid0:~#
+
