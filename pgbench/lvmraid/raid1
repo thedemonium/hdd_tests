@@ -18,6 +18,7 @@ root@lxc-super02:~# lxc init 23b29233ca2c u18-pgbench-lvmraid0 -s lv_lvmraid0_nv
 Creating u18-pgbench-lvmraid0
 
 # pgbench Tests Results
+
 root@u18-pgbench-lvmraid0:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark
 Password:
 dropping old tables...
