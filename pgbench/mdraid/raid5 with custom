@@ -1,51 +1,5 @@
 # pgbench Tests Results
 
-postgres@u18-pgbench-raid5nvme:~$ pgbench -h 127.0.0.1 -p 5432 -U postgres -s 150 -j 4 -c=4 benchmark
-Password:
-dropping old tables...
-NOTICE:  table "pgbench_accounts" does not exist, skipping
-NOTICE:  table "pgbench_branches" does not exist, skipping
-NOTICE:  table "pgbench_history" does not exist, skipping
-NOTICE:  table "pgbench_tellers" does not exist, skipping
-creating tables...
-generating data (client-side)...
-15000000 of 15000000 tuples (100%) done (elapsed 16.43 s, remaining 0.00 s)
-vacuuming...
-creating primary keys...
-done in 34.67 s (drop tables 0.00 s, create tables 0.01 s, client-side generate 17.09 s, vacuum 2.85 s, primary keys 14.72 s).
-postgres@u18-pgbench-raid5nvme:~$
-
-root@u18-pgbench-raid5nvme:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i  benchmark
-Password:
-dropping old tables...
-NOTICE:  table "pgbench_accounts" does not exist, skipping
-NOTICE:  table "pgbench_branches" does not exist, skipping
-NOTICE:  table "pgbench_history" does not exist, skipping
-NOTICE:  table "pgbench_tellers" does not exist, skipping
-creating tables...
-generating data (client-side)...
-100000 of 100000 tuples (100%) done (elapsed 0.04 s, remaining 0.00 s)
-vacuuming...
-creating primary keys...
-done in 0.42 s (drop tables 0.00 s, create tables 0.01 s, client-side generate 0.17 s, vacuum 0.07 s, primary keys 0.17 s).
-root@u18-pgbench-raid5nvme:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 150 -j 4 -c 4 benchmark
-pgbench: fatal: some of the specified options cannot be used in initialization (-i) mode
-root@u18-pgbench-raid5nvme:~# pgbench -h 127.0.0.1 -p 5432 -U postgres  -s 150 -j 4 -c 4 benchmark
-Password:
-pgbench: warning: scale option ignored, using count from pgbench_branches table (1)
-starting vacuum...end.
-transaction type: <builtin: TPC-B (sort of)>
-scaling factor: 1
-query mode: simple
-number of clients: 4
-number of threads: 4
-number of transactions per client: 10
-number of transactions actually processed: 40/40
-latency average = 5.974 ms
-tps = 669.586062 (including connections establishing)
-tps = 1150.033500 (excluding connections establishing)
-root@u18-pgbench-raid5nvme:~#
-
 root@u18-pgbench-raid5nvme:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark
 Password:
 dropping old tables...
@@ -56,6 +10,7 @@ vacuuming...
 creating primary keys...
 done in 3961.66 s (drop tables 0.03 s, create tables 0.01 s, client-side generate 1954.70 s, vacuum 522.32 s, primary keys 1484.61 s).
 root@u18-pgbench-raid5nvme:~#
+
 root@u18-pgbench-raid5nvme:~# pgbench -h 127.0.0.1 -p 5432 -U postgres  -T 90 -j 4 -c 4 benchmark
 Password:
 starting vacuum...end.

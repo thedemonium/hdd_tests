@@ -11,7 +11,8 @@ lxc storage create etalon dir source=/etalon
 
 # pgbench Tests Results
 
-root@u18-pgbench-etalon-cus:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmarkPassword:
+root@u18-pgbench-etalon-cus:~# pgbench -h 127.0.0.1 -p 5432 -U postgres -i -s 15000 benchmark
+Password:
 dropping old tables...
 NOTICE:  table "pgbench_accounts" does not exist, skipping
 NOTICE:  table "pgbench_branches" does not exist, skipping
